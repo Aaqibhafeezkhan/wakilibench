@@ -32,3 +32,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Agent/AI workspace files (local only)
+AGENTS.md
+CHECKLIST.md
+.kiro/

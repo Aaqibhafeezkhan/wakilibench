@@ -5,8 +5,8 @@
 
 import { getProvider } from "./provider";
 import type { ChatMessage, RubricScore } from "./types";
-import { TUTOR_SYSTEM_PROMPT } from "../../prompts/tutor";
-import { EVALUATOR_SYSTEM_PROMPT } from "../../prompts/evaluator";
+import { TUTOR_SYSTEM_PROMPT } from "./tutor-prompt";
+import { EVALUATOR_SYSTEM_PROMPT } from "./evaluator-prompt";
 
 export type { RubricScore } from "./types";
 
