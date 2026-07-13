@@ -2,6 +2,7 @@ import { config } from "../config";
 import type { AIProvider } from "./types";
 import { OpenAIProvider } from "./providers/openai";
 import { AnthropicProvider } from "./providers/anthropic";
+import { QwenProvider } from "./providers/qwen";
 
 /**
  * Returns the configured AI provider.
@@ -15,9 +16,11 @@ export function getProvider(): AIProvider {
       return new OpenAIProvider();
     case "anthropic":
       return new AnthropicProvider();
+    case "qwen":
+      return new QwenProvider();
     default:
       throw new Error(
-        `Unknown LLM_PROVIDER: "${providerName}". Supported: openai, anthropic`
+        `Unknown LLM_PROVIDER: "${providerName}". Supported: openai, anthropic, qwen`
       );
   }
 }

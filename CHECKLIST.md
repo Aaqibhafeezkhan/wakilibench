@@ -101,13 +101,20 @@
 
 ## Deployment 🔲
 
-- [ ] Push to GitHub
-- [ ] Deploy to Vercel
-- [ ] Set environment variables on Vercel
-- [ ] Test on vercel.app domain
-- [ ] Point app.wakilibench.njinway.com to Vercel
+- [ ] Push to GitHub (https://github.com/Njine/wakilibench)
+- [ ] Deploy to Alibaba Cloud (free tier for Qwen hackathon)
+  - [ ] Set up ECS instance or Function Compute / Container Service
+  - [ ] Configure Node.js runtime
+  - [ ] Set environment variables
+  - [ ] Run `npm run build && npm run start`
+  - [ ] Point app.wakilibench.njinway.com to Alibaba Cloud
+- [ ] Set up Qwen API via DashScope
+  - [ ] Get DashScope API key from console.aliyun.com
+  - [ ] Set LLM_PROVIDER=qwen in production env
+  - [ ] Set LLM_MODEL=qwen-plus (or qwen-max)
+  - [ ] Set LLM_API_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
 - [ ] Verify production auth flow
-- [ ] Verify production AI flow
+- [ ] Verify production AI flow (tutor + evaluator)
 
 ---
 
