@@ -43,6 +43,6 @@ export const config = {
     name: "WakiliBench",
     url: optionalEnv("NEXT_PUBLIC_APP_URL", "http://localhost:3001"),
     // Usage limits
-    freeSessionsPerWeek: 3,
+    freeSessionsPerWeek: 5,
   },
 } as const;

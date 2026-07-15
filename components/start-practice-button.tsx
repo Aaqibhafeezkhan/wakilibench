@@ -35,10 +35,10 @@ export function StartPracticeButton({ topicId, scenarioId }: Props) {
       .eq("user_id", user.id)
       .gte("created_at", weekStart.toISOString());
 
-    if ((count || 0) >= 3) {
+    if ((count || 0) >= 5) {
       setLoading(false);
       alert(
-        "You have reached your weekly session limit (3 sessions). Your limit resets next Monday."
+        "You have reached your weekly session limit (5 sessions). Your limit resets next Monday."
       );
       return;
     }
