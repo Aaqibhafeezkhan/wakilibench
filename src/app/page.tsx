@@ -60,12 +60,14 @@ export default function Home() {
             <Link href="/signup" className="wb-btn">
               Enter the Room
             </Link>
+            {/* Request Access button — re-enable for institutional pilots
             <a
               href="mailto:hello@njinway.com?subject=WakiliBench%20Pilot%20Access"
               className="wb-btn secondary"
             >
               Request Access
             </a>
+            */}
           </div>
           <p className="mono text-[13px] text-[var(--wb-yellow)] mt-8 max-w-[710px]">
             Board note: AI can draft quickly. WakiliBench trains the judgment
@@ -327,12 +329,14 @@ export default function Home() {
               <Link href="/signup" className="wb-btn">
                 Enter the Room
               </Link>
+              {/* Join Pilot button — re-enable for institutional access
               <a
                 href="mailto:hello@njinway.com?subject=WakiliBench%20Pilot%20Access"
                 className="wb-btn secondary"
               >
                 Join Pilot
               </a>
+              */}
             </div>
           </div>
         </div>
