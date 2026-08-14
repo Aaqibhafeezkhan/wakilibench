@@ -5,6 +5,19 @@ import { Disclaimer } from "../../../components/disclaimer";
 import { checkUsage } from "../../../lib/usage";
 import Link from "next/link";
 
+function getNextMonday(): string {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+  const nextMonday = new Date(now);
+  nextMonday.setDate(now.getDate() + daysUntilMonday);
+  return nextMonday.toLocaleDateString("en-KE", {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+  });
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const {
@@ -19,6 +32,7 @@ export default async function DashboardPage() {
     user.user_metadata?.full_name || user.email?.split("@")[0] || "Counsel";
 
   const usage = await checkUsage(supabase, user.id);
+  const resetDate = getNextMonday();
 
   return (
     <div className="min-h-screen bg-[var(--wb-green-3)]">
@@ -44,6 +58,9 @@ export default async function DashboardPage() {
             </p>
             <p className="text-[#fff8df] font-bold mt-1">
               {usage.sessionsThisWeek} / {usage.limit} used
+            </p>
+            <p className="mono text-[10px] text-[var(--wb-chalk-soft)] mt-1">
+              Resets {resetDate}
             </p>
           </div>
           <div className="text-right">
