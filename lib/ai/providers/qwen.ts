@@ -8,18 +8,6 @@ import type {
 /**
  * Qwen (Alibaba Cloud) provider.
  * Uses the OpenAI-compatible DashScope API.
- *
- * To use:
- *   LLM_PROVIDER=qwen
- *   LLM_API_KEY=sk-your-dashscope-key
- *   LLM_API_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
- *   LLM_MODEL=qwen-plus
- *
- * Available models:
- *   - qwen-turbo (fastest, cheapest)
- *   - qwen-plus (balanced)
- *   - qwen-max (most capable)
- *   - qwen-long (extended context)
  */
 export class QwenProvider implements AIProvider {
   name = "qwen";
@@ -31,6 +19,7 @@ export class QwenProvider implements AIProvider {
       model: config.ai.model,
       messages: request.messages,
       temperature: request.temperature ?? 0.7,
+      enable_thinking: false,
     };
 
     if (request.maxTokens) {
@@ -64,8 +53,10 @@ export class QwenProvider implements AIProvider {
       throw new Error("No response from Qwen");
     }
 
+    const content = choice.message?.content || choice.message?.reasoning_content || "";
+
     return {
-      content: choice.message?.content || "",
+      content,
       finishReason: choice.finish_reason || "unknown",
       usage: data.usage
         ? {
