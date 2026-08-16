@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "../lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { SessionTimer } from "./session-timer";
+import { LegalLinkedText } from "./legal-link";
 
 interface Message {
   id: string;
@@ -162,8 +163,8 @@ export function SessionWorkspace({
                   ? "Evaluator"
                   : "System"}
               </span>
-              <p className="p-3 md:p-5 text-[var(--wb-chalk-soft)] whitespace-pre-wrap leading-relaxed text-sm">
-                {msg.content}
+              <p className="p-3 md:p-5 text-[var(--wb-chalk-soft)] leading-relaxed text-sm">
+                <LegalLinkedText text={msg.content} />
               </p>
             </div>
           ))}
