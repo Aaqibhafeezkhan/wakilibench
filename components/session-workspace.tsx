@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "../lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { SessionTimer } from "./session-timer";
 
 interface Message {
   id: string;
@@ -125,9 +126,12 @@ export function SessionWorkspace({
     <div>
       {/* Scenario card */}
       <div className="prompt-card mb-6">
-        <p className="mono text-[11px] uppercase text-[var(--wb-yellow)] tracking-widest mb-3">
-          {topicTitle} · {scenario.difficulty}
-        </p>
+        <div className="flex items-start justify-between mb-3">
+          <p className="mono text-[11px] uppercase text-[var(--wb-yellow)] tracking-widest">
+            {topicTitle} · {scenario.difficulty}
+          </p>
+          <SessionTimer active={sessionStatus === "active"} />
+        </div>
         <h2 className="serif text-[28px] leading-[0.95] text-[#fff8df] mb-4">
           {scenario.title}
         </h2>
@@ -145,11 +149,11 @@ export function SessionWorkspace({
           {messages.map((msg, i) => (
             <div
               key={msg.id}
-              className={`grid grid-cols-[140px_1fr] ${
+              className={`grid grid-cols-[100px_1fr] md:grid-cols-[140px_1fr] ${
                 i < messages.length - 1 ? "border-b border-[var(--wb-line)]" : ""
               }`}
             >
-              <span className="mono text-[11px] uppercase text-[var(--wb-yellow)] p-5 border-r border-[var(--wb-line)] tracking-widest">
+              <span className="mono text-[10px] md:text-[11px] uppercase text-[var(--wb-yellow)] p-3 md:p-5 border-r border-[var(--wb-line)] tracking-widest">
                 {msg.role === "user"
                   ? "Learner"
                   : msg.role === "tutor"
@@ -158,7 +162,7 @@ export function SessionWorkspace({
                   ? "Evaluator"
                   : "System"}
               </span>
-              <p className="p-5 text-[var(--wb-chalk-soft)] whitespace-pre-wrap leading-relaxed text-sm">
+              <p className="p-3 md:p-5 text-[var(--wb-chalk-soft)] whitespace-pre-wrap leading-relaxed text-sm">
                 {msg.content}
               </p>
             </div>
