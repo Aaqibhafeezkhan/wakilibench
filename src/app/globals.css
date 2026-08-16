@@ -32,6 +32,20 @@
   --wb-mono: "Courier New", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+/* Light mode overrides */
+.light-mode {
+  --wb-chalk: #1d1710;
+  --wb-chalk-soft: #3d3529;
+  --wb-ink: #f2edd8;
+  --wb-green: #f5f2eb;
+  --wb-green-2: #ebe7dd;
+  --wb-green-3: #faf8f4;
+  --wb-line: rgba(29, 23, 16, 0.12);
+  --wb-paper: #ffffff;
+  --wb-yellow: #a67c20;
+  --wb-red: #b94430;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -44,7 +58,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Utility classes matching the WP theme */
+/* Utility classes */
 .chalk-text {
   color: var(--wb-chalk);
 }
@@ -53,12 +67,21 @@ body {
   color: #fff8df;
 }
 
+.light-mode .chalk-bright {
+  color: #1d1710;
+}
+
 .board-surface {
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.06),
     transparent
   ), var(--wb-green);
+  border: 1px solid var(--wb-line);
+}
+
+.light-mode .board-surface {
+  background: var(--wb-green);
   border: 1px solid var(--wb-line);
 }
 
@@ -72,6 +95,11 @@ body {
   padding: 1.5rem;
 }
 
+.light-mode .prompt-card {
+  background: var(--wb-green);
+  border: 1px solid var(--wb-line);
+}
+
 .paper-card {
   background: var(--wb-paper);
   color: var(--wb-ink);
@@ -79,28 +107,28 @@ body {
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.22);
 }
 
+.light-mode .paper-card {
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.08);
+}
+
 .score-accent {
   color: var(--wb-yellow);
 }
 
-/* Monospace labels — section tags, cues */
 .mono {
   font-family: var(--wb-mono);
   letter-spacing: 0.12em;
 }
 
-/* Serif headings */
 .serif {
   font-family: var(--wb-serif);
   letter-spacing: -0.04em;
 }
 
-/* Section divider */
 .divider {
   border-top: 1px solid var(--wb-line);
 }
 
-/* Wood bar accent */
 .wood-bar {
   background: linear-gradient(
     90deg,
@@ -110,7 +138,10 @@ body {
   border-bottom: 5px solid #3f2414;
 }
 
-/* Button style matching WP theme */
+.light-mode .wood-bar {
+  background: var(--wb-wood);
+}
+
 .wb-btn {
   display: inline-flex;
   align-items: center;
@@ -140,7 +171,6 @@ body {
   box-shadow: none;
 }
 
-/* Line clamp */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

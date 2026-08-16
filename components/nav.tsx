@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { createClient } from "../lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ThemeToggle } from "./theme-toggle";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard" },
@@ -53,6 +54,7 @@ export function Nav() {
           >
             Exit
           </button>
+          <ThemeToggle />
         </div>
 
         {/* Mobile hamburger */}
@@ -91,6 +93,9 @@ export function Nav() {
             >
               Exit
             </button>
+            <div className="mt-2">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       )}
