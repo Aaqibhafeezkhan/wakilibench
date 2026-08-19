@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../../../lib/supabase/server";
 import { evaluateAnswer, type RubricScore } from "../../../../../../lib/ai";
+import { checkRateLimit, RATE_LIMITS } from "../../../../../../lib/rate-limit";
 
 export async function POST(
   _request: Request,
@@ -16,6 +17,15 @@ export async function POST(
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Rate limit
+  const rateCheck = checkRateLimit(`evaluate:${user.id}`, RATE_LIMITS.evaluate);
+  if (!rateCheck.allowed) {
+    return NextResponse.json(
+      { error: `Too many requests. Try again in ${rateCheck.resetIn}s.` },
+      { status: 429 }
+    );
   }
 
   // Verify session belongs to user

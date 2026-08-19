@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../../../lib/supabase/server";
 import { generateTutorResponse } from "../../../../../../lib/ai";
+import { checkRateLimit, RATE_LIMITS } from "../../../../../../lib/rate-limit";
 
 export async function POST(
   _request: Request,
@@ -9,13 +10,21 @@ export async function POST(
   const { id: sessionId } = await params;
   const supabase = await createClient();
 
-  // Verify user
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Rate limit
+  const rateCheck = checkRateLimit(`tutor:${user.id}`, RATE_LIMITS.tutor);
+  if (!rateCheck.allowed) {
+    return NextResponse.json(
+      { error: `Too many requests. Try again in ${rateCheck.resetIn}s.` },
+      { status: 429 }
+    );
   }
 
   // Verify session belongs to user
@@ -45,10 +54,7 @@ export async function POST(
     .single();
 
   if (!scenario) {
-    return NextResponse.json(
-      { error: "Scenario not found" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Scenario not found" }, { status: 404 });
   }
 
   // Load conversation history

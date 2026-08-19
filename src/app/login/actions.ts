@@ -27,7 +27,17 @@ export async function login(formData: FormData) {
 export async function loginWithGoogle() {
   const supabase = await createClient();
   const headersList = await headers();
-  const origin = headersList.get("origin") || "https://wakilibenchapp.njinway.com";
+  const rawOrigin = headersList.get("origin") || "";
+
+  // Only allow known origins to prevent open redirect
+  const allowedOrigins = [
+    "https://wakilibenchapp.njinway.com",
+    "https://wakilibench.com",
+    "http://localhost:3001",
+  ];
+  const origin = allowedOrigins.includes(rawOrigin)
+    ? rawOrigin
+    : "https://wakilibenchapp.njinway.com";
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
