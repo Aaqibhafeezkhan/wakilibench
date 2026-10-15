@@ -25,7 +25,7 @@ interface Props {
 const CITATION_PATTERNS: CitationPattern[] = [
   {
     regex:
-      /\bArticle\s+\d+(?:\s*\(\d+\))?(?:\s*,?\s*(?:of\s+)?(?:the\s+)?Constitution(?:\s+of\s+Kenya)?(?:,?\s+2010)?)?/gi,
+      /\bArticle\s+\d+(?:\s*\(\d+\))?\s*,?\s*(?:of\s+)?(?:the\s+)?Constitution(?:\s+of\s+Kenya)?(?:,?\s+2010)?/gi,
     url: CONSTITUTION_URL,
   },
   {
