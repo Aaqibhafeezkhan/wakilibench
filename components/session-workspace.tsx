@@ -137,10 +137,10 @@ export function SessionWorkspace({
           {scenario.title}
         </h2>
         <p className="text-[var(--wb-chalk)] leading-relaxed">
-          {scenario.factPattern}
+          <LegalLinkedText text={scenario.factPattern} />
         </p>
         <p className="text-[var(--wb-chalk-soft)] mt-4 italic border-t border-[var(--wb-line)] pt-4">
-          {scenario.instructions}
+          <LegalLinkedText text={scenario.instructions} />
         </p>
       </div>
 

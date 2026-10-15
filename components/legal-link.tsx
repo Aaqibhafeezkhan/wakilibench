@@ -1,88 +1,118 @@
 "use client";
 
-/**
- * Renders text with Kenya Law links for detected legal citations.
- * Detects patterns like "Section X, ... Act (Cap Y)" and "Article X, Constitution"
- * and wraps them in links to kenyalaw.org.
- */
+const CONSTITUTION_URL =
+  "https://new.kenyalaw.org/akn/ke/act/2010/constitution/eng@2010-09-03/source";
 
-const KENYA_LAW_BASE = "https://new.kenyalaw.org";
+const LAW_OF_CONTRACT_URL =
+  "https://new.kenyalaw.org/akn/ke/act/1960/43/eng@2022-12-31/source";
 
-const CITATION_PATTERNS = [
-  {
-    // "Section 73, Law of Contract Act (Cap 23)"
-    regex: /(Section\s+\d+(?:\(\d+\))?[^.]*?Cap\.?\s*(\d+)\))/gi,
-    url: (match: string, cap: string) =>
-      `${KENYA_LAW_BASE}/akn/ke/act/cap${cap}/eng@latest`,
-  },
-  {
-    // "Article 47, Constitution of Kenya"
-    regex: /(Article\s+(\d+)(?:\(\d+\))?[^.]*?Constitution[^.]*)/gi,
-    url: () =>
-      `${KENYA_LAW_BASE}/akn/ke/act/2010/constitution/eng@latest`,
-  },
-  {
-    // "[2019] KECA 432 (KLR)" style citations
-    regex: /(\[\d{4}\]\s+KE\w+\s+\d+\s*\(KLR\))/gi,
-    url: () => `https://new.kenyalaw.org`,
-  },
-];
+interface CitationPattern {
+  regex: RegExp;
+  url: string;
+}
+
+interface CitationMatch {
+  start: number;
+  end: number;
+  text: string;
+  url: string;
+}
 
 interface Props {
   text: string;
 }
 
-export function LegalLinkedText({ text }: Props) {
-  let processed = text;
+const CITATION_PATTERNS: CitationPattern[] = [
+  {
+    regex:
+      /\bArticle\s+\d+(?:\s*\(\d+\))?(?:\s*,?\s*(?:of\s+)?(?:the\s+)?Constitution(?:\s+of\s+Kenya)?(?:,?\s+2010)?)?/gi,
+    url: CONSTITUTION_URL,
+  },
+  {
+    regex:
+      /\b(?:Sections?\s+\d+(?:\(\d+\))?\s+(?:of\s+)?(?:the\s+)?)?Law of Contract Act(?:\s*,?\s*\(?\s*Cap\.?\s*23\s*\)?)?/gi,
+    url: LAW_OF_CONTRACT_URL,
+  },
+  {
+    regex:
+      /Kenya Revenue Authority v Export Trading Company Limited\s+\[2020\]\s+KECA\s+251\s+\(KLR\)/gi,
+    url: "https://new.kenyalaw.org/akn/ke/judgment/keca/2020/251",
+  },
+  {
+    regex: /Onsongo v Republic\s+\[2022\]\s+KECA\s+1181\s+\(KLR\)/gi,
+    url: "https://new.kenyalaw.org/akn/ke/judgment/keca/2022/1181",
+  },
+  {
+    regex:
+      /Kenya National Commission for Unesco\s+&\s+another v Cabinet Secretary for Education\s+&\s+2 others;\s+Lentoijoni\s+&\s+2 others\s+\(Interested Parties\)\s+\[2024\]\s+KECA\s+67\s+\(KLR\)/gi,
+    url: "https://new.kenyalaw.org/akn/ke/judgment/keca/2024/67",
+  },
+];
 
-  // Replace citations with linked versions using markers
-  const links: { marker: string; url: string; text: string }[] = [];
+export function LegalLinkedText({ text }: Props) {
+  const matches: CitationMatch[] = [];
 
   for (const pattern of CITATION_PATTERNS) {
-    processed = processed.replace(pattern.regex, (match, p1, p2) => {
-      const marker = `__LINK_${links.length}__`;
-      const url = pattern.url(match, p2 || p1);
-      links.push({ marker, url, text: match });
-      return marker;
-    });
+    pattern.regex.lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = pattern.regex.exec(text)) !== null) {
+      if (match.index !== undefined) {
+        matches.push({
+          start: match.index,
+          end: match.index + match[0].length,
+          text: match[0],
+          url: pattern.url,
+        });
+      }
+
+      if (match[0].length === 0) {
+        pattern.regex.lastIndex += 1;
+      }
+    }
   }
 
-  if (links.length === 0) {
+  if (matches.length === 0) {
     return <span className="whitespace-pre-wrap">{text}</span>;
   }
 
-  // Split by markers and reconstruct with links
-  const parts: (string | { url: string; text: string })[] = [];
-  let remaining = processed;
+  matches.sort((a, b) => a.start - b.start || b.end - a.end);
 
-  for (const link of links) {
-    const idx = remaining.indexOf(link.marker);
-    if (idx >= 0) {
-      if (idx > 0) parts.push(remaining.slice(0, idx));
-      parts.push({ url: link.url, text: link.text });
-      remaining = remaining.slice(idx + link.marker.length);
-    }
+  const nonOverlapping: CitationMatch[] = [];
+  let lastEnd = 0;
+
+  for (const match of matches) {
+    if (match.start < lastEnd) continue;
+    nonOverlapping.push(match);
+    lastEnd = match.end;
   }
-  if (remaining) parts.push(remaining);
 
-  return (
-    <span className="whitespace-pre-wrap">
-      {parts.map((part, i) =>
-        typeof part === "string" ? (
-          <span key={i}>{part}</span>
-        ) : (
-          <a
-            key={i}
-            href={part.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[var(--wb-yellow)] hover:underline"
-            title="View on Kenya Law"
-          >
-            {part.text}
-          </a>
-        )
-      )}
-    </span>
-  );
+  const parts = [];
+  let cursor = 0;
+
+  for (const [index, match] of nonOverlapping.entries()) {
+    if (cursor < match.start) {
+      parts.push(text.slice(cursor, match.start));
+    }
+
+    parts.push(
+      <a
+        key={"legal-link-" + index}
+        href={match.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[var(--wb-yellow)] hover:underline"
+        title="View source on Kenya Law"
+      >
+        {match.text}
+      </a>
+    );
+    cursor = match.end;
+  }
+
+  if (cursor < text.length) {
+    parts.push(text.slice(cursor));
+  }
+
+  return <span className="whitespace-pre-wrap">{parts}</span>;
 }

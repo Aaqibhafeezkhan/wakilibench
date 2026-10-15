@@ -4,6 +4,7 @@ import { Nav } from "../../../../components/nav";
 import { Disclaimer } from "../../../../components/disclaimer";
 import Link from "next/link";
 import { StartPracticeButton } from "../../../../components/start-practice-button";
+import { LegalLinkedText } from "../../../../components/legal-link";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -55,7 +56,7 @@ export default async function TopicDetailPage({ params }: Props) {
                     {scenario.title}
                   </h2>
                   <p className="text-sm text-[var(--wb-chalk-soft)] mt-2 line-clamp-2">
-                    {scenario.fact_pattern}
+                    <LegalLinkedText text={scenario.fact_pattern} />
                   </p>
                   <span className="inline-block mt-3 mono text-[10px] px-2 py-1 border border-[var(--wb-line)] text-[var(--wb-yellow)] uppercase tracking-widest">
                     {scenario.difficulty}
