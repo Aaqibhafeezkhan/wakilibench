@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const constitutionArticle = /\\bArticle\\s+\\d+(?:\\s*\\(\\d+\\))?\\s*,?\\s*(?:of\\s+)?(?:the\\s+)?Constitution(?:\\s+of\\s+Kenya)?(?:,?\\s+2010)?/gi;
+const constitutionArticle = /\bArticle\s+\d+(?:\s*\(\d+\))?\s*,?\s*(?:of\s+)?(?:the\s+)?Constitution(?:\s+of\s+Kenya)?(?:,?\s+2010)?/gi;
 
 test("links Article citations only when the Constitution is explicit", () => {
   assert.equal([... "Article 47".matchAll(constitutionArticle)].length, 0);
